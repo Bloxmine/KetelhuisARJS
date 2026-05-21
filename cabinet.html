@@ -463,7 +463,7 @@
     <div id="settings-modal">
         <div style="margin-bottom: 15px; font-weight: bold;">DIFFICULTY</div>
         <div class="difficulty-buttons">
-            <button class="difficulty-btn active" data-difficulty="easy">Easy</button>
+            <button class="difficulty-btn" data-difficulty="easy">Easy</button>
             <button class="difficulty-btn" data-difficulty="medium">Medium</button>
             <button class="difficulty-btn" data-difficulty="hard">Hard</button>
         </div>
@@ -617,16 +617,22 @@ let playTimeout = null;
 let playUnlockHandler = null;
 let loggingSession = null;
 let loggingRequestInFlight = false;
-const DANGER_THRESHOLD = 80;
-const COLD_THRESHOLD = 30;
+let DANGER_THRESHOLD = 80;
+let COLD_THRESHOLD = 30;
 let currentDifficulty = 'medium';
 
 // Difficulty settings: width of green zone in SVG units (out of 160-40=120 units)
 const difficultySettings = {
-    easy: { leftX: 30, rightX: 170, label: 'Easy' },      // Very wide green zone
-    medium: { leftX: 45, rightX: 155, label: 'Medium' },  // Current medium zone
-    hard: { leftX: 55, rightX: 145, label: 'Hard' }       // Narrow green zone
+    easy: { leftX: 30, rightX: 170, label: 'Easy', coldThreshold: 20, dangerThreshold: 80 },
+    medium: { leftX: 45, rightX: 155, label: 'Medium', coldThreshold: 35, dangerThreshold: 70 },
+    hard: { leftX: 55, rightX: 145, label: 'Hard', coldThreshold: 40, dangerThreshold: 70 }
 };
+
+function updateDifficultyThresholds() {
+    const settings = difficultySettings[currentDifficulty];
+    COLD_THRESHOLD = settings.coldThreshold;
+    DANGER_THRESHOLD = settings.dangerThreshold;
+}
 
 // Settings modal functions
 const settingsBtn = document.getElementById('settings-btn');
@@ -660,13 +666,45 @@ difficultyBtns.forEach(btn => {
     });
 });
 
+// Initialize with Medium difficulty as default
+const mediumBtn = document.querySelector('[data-difficulty="medium"]');
+if (mediumBtn) {
+    mediumBtn.classList.add('active');
+    currentDifficulty = 'medium';
+    updateGreenZone();
+}
+
 function updateGreenZone() {
     const settings = difficultySettings[currentDifficulty];
+    updateDifficultyThresholds(); // Update thresholds
+    
+    const RADIUS = 80;
+    const CENTER = 100;
+    
+    // Calculate Y coordinate for top of gauge based on X position
+    // Formula: (x - 100)² + (y - 100)² = 80²
+    // y = 100 - sqrt(80² - (x - 100)²)
+    const calcTopY = (x) => CENTER - Math.sqrt(RADIUS * RADIUS - Math.pow(x - CENTER, 2));
+    
+    const topYLeft = calcTopY(settings.leftX);
+    const topYRight = calcTopY(settings.rightX);
+    
+    // Update blue zone (cold - too low)
+    const bluePath = document.querySelector('path[stroke="#3b82f6"]');
+    if (bluePath) {
+        bluePath.setAttribute('d', `M 40 150 A 80 80 0 0 1 ${settings.leftX} ${topYLeft}`);
+    }
+    
+    // Update green zone (good - middle)
     const greenZonePath = document.querySelector('path[stroke="#10b981"]');
     if (greenZonePath) {
-        // Create new path with updated positions
-        const y = 55;
-        greenZonePath.setAttribute('d', `M ${settings.leftX} ${y} A 80 80 0 0 1 ${settings.rightX} ${y}`);
+        greenZonePath.setAttribute('d', `M ${settings.leftX} ${topYLeft} A 80 80 0 0 1 ${settings.rightX} ${topYRight}`);
+    }
+    
+    // Update red zone (hot/danger)
+    const redPath = document.querySelector('path[stroke="red"]');
+    if (redPath) {
+        redPath.setAttribute('d', `M ${settings.rightX} ${topYRight} A 80 80 0 0 1 160 150`);
     }
 }
 
