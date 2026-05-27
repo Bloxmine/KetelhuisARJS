@@ -70,6 +70,15 @@
 
         .startbutton {
             margin-top: 50px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .choice-buttons {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         /* Steampunk Button Style */
@@ -120,19 +129,24 @@
         <img class="logo" src="images/logo.png" alt="Ketelhuis AR Logo">
         
         <div class="startbutton">
-            <!-- Clicking this acts as the "User Activation" for all following pages -->
-            <a href="story.html" class="btn-steampunk" id="start-trigger">
-                BEGIN HET VERHAAL
-            </a>
+            <div class="choice-buttons">
+                <a href="story.html?choice=cabinet" class="btn-steampunk" id="start-cabinet">
+                    KAST
+                </a>
+                <a href="story.html?choice=interaction" class="btn-steampunk" id="start-interaction">
+                    VENTIELEN
+                </a>
+            </div>
         </div>
     </div>
 
     <script>
-        // Even though this page doesn't have sound, 
-        // clicking this link helps Safari trust the "chain" of navigation 
-        // leading to the video page.
-        document.getElementById('start-trigger').addEventListener('click', function() {
-            console.log("Engine Engaged - User interaction registered.");
+        document.getElementById('start-cabinet').addEventListener('click', function() {
+            console.log("Engine Engaged - Cabinet path selected.");
+        });
+
+        document.getElementById('start-interaction').addEventListener('click', function() {
+            console.log("Engine Engaged - Interaction path selected.");
         });
     </script>
 </body>

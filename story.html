@@ -20,6 +20,36 @@
             font-family: sans-serif;
             transition: opacity 0.5s;
         }
+        /* Bottom two-button row: equal-width buttons side-by-side */
+        .btn-row {
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            pointer-events: none; /* allow video clicks outside buttons */
+        }
+        .btn-wrap {
+            width: 92%;
+            max-width: 700px;
+            display: flex;
+            justify-content: center;
+            pointer-events: auto;
+        }
+        .btn {
+            min-width: 180px;
+            text-decoration: none;
+            color: white;
+            font-size: 20px;
+            background-color: #007BFF;
+            padding: 12px 14px;
+            border-radius: 8px;
+            text-align: center;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
 </head>
 <body>
@@ -32,13 +62,19 @@
         Your browser does not support the video tag.
     </video>
 
-    <div style="position: absolute; bottom: 40px; width: 100%; text-align: center;">
-        <a href="cabinet.html" style="text-decoration: none; color: white; font-size: 24px; background-color: #007BFF; padding: 10px 20px; border-radius: 5px;">Ga door</a>
+    <div class="btn-row">
+        <div class="btn-wrap">
+            <a class="btn" id="next-button" href="#">Ga door</a>
+        </div>
     </div>
 
     <script>
         const video = document.getElementById('story-video');
         const prompt = document.getElementById('unmute-prompt');
+        const nextButton = document.getElementById('next-button');
+        const choice = new URLSearchParams(window.location.search).get('choice');
+
+        nextButton.href = choice === 'interaction' ? 'interaction.html' : 'cabinet.html';
 
         function enableSound() {
             // Unmute and try to ensure it's playing

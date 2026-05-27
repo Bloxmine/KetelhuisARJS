@@ -28,7 +28,7 @@
                 radial-gradient(circle at bottom right, rgba(16, 185, 129, 0.10), transparent 26%),
                 linear-gradient(180deg, #02040c 0%, #050816 100%);
             color: var(--text);
-            font-family: Georgia, 'Times New Roman', serif;
+            font-family: 'Arial', sans-serif;
         }
 
         body::before {
@@ -101,6 +101,10 @@
             color: var(--text);
         }
 
+        .pill[role="status"] {
+            outline: none;
+        }
+
         .dot {
             width: 10px;
             height: 10px;
@@ -130,6 +134,110 @@
             text-transform: uppercase;
             letter-spacing: 0.08em;
             color: #cbd5e1;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .panel-header h2 {
+            margin-bottom: 0;
+        }
+
+        .panel-note {
+            color: var(--muted);
+            font-size: 0.84rem;
+            line-height: 1.45;
+            max-width: 36ch;
+        }
+
+        .controls {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .control-label {
+            color: var(--muted);
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            min-width: 76px;
+        }
+
+        .session-filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-chip,
+        .export-button {
+            appearance: none;
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            background: rgba(15, 23, 42, 0.92);
+            color: var(--text);
+            border-radius: 999px;
+            padding: 9px 14px;
+            font: inherit;
+            font-size: 0.84rem;
+            cursor: pointer;
+            transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        .filter-chip[aria-pressed="true"] {
+            background: rgba(245, 158, 11, 0.18);
+            border-color: rgba(245, 158, 11, 0.42);
+            color: #fde68a;
+        }
+
+        .filter-chip:hover,
+        .export-button:hover {
+            transform: translateY(-1px);
+            border-color: rgba(245, 158, 11, 0.35);
+        }
+
+        .filter-chip:focus-visible,
+        .export-button:focus-visible,
+        select:focus-visible {
+            outline: 3px solid #f59e0b;
+            outline-offset: 3px;
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.18);
+        }
+
+        .filter-chip:disabled,
+        .export-button:disabled,
+        select:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        select {
+            border-radius: 999px;
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            background: rgba(15, 23, 42, 0.96);
+            color: var(--text);
+            padding: 9px 14px;
+            font: inherit;
+            min-width: 160px;
+        }
+
+        .export-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
         .graph-wrap {
@@ -185,6 +293,72 @@
             word-break: break-word;
         }
 
+        .table-wrap {
+            margin-top: 14px;
+            border-radius: 14px;
+            overflow: auto;
+            border: 1px solid rgba(148, 163, 184, 0.14);
+            background: rgba(2, 6, 23, 0.55);
+            max-height: 320px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.84rem;
+        }
+
+        thead th {
+            position: sticky;
+            top: 0;
+            background: rgba(15, 23, 42, 0.98);
+            color: #cbd5e1;
+            text-align: left;
+            padding: 11px 12px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+        }
+
+        tbody td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.10);
+            color: var(--text);
+        }
+
+        tbody tr:nth-child(2n) td {
+            background: rgba(15, 23, 42, 0.26);
+        }
+
+        .sample-zone {
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .sample-zone.red { color: #fecaca; }
+        .sample-zone.green { color: #a7f3d0; }
+        .sample-zone.cold { color: #bfdbfe; }
+
+        .table-empty {
+            padding: 18px 12px;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
         .zones {
             display: flex;
             flex-wrap: wrap;
@@ -232,22 +406,55 @@
                 <div id="subtitle" class="subtitle">Waiting for a logging session to start.</div>
             </div>
             <div class="status-row">
-                <div class="pill"><span id="status-dot" class="dot idle"></span><span id="status-text">Idle</span></div>
-                <div class="pill" id="session-pill">Session: none</div>
-                <div class="pill" id="sample-pill">Samples: 0</div>
+                <div class="pill" id="status-pill" role="status" aria-live="polite" aria-atomic="true" aria-label="Logging status: Idle"><span id="status-dot" class="dot idle" aria-hidden="true"></span><span id="status-text">Idle</span></div>
+                <div class="pill" id="session-pill" role="status" aria-live="polite" aria-label="Current session: none">Session: none</div>
+                <div class="pill" id="sample-pill" role="status" aria-live="polite" aria-label="Sample count: 0">Samples: 0</div>
             </div>
         </section>
 
         <section class="grid">
             <article class="panel">
-                <h2>Live Graph</h2>
+                <div class="panel-header">
+                    <h2>Live Graph</h2>
+                    <div class="panel-note">The chart mirrors the filtered sample set below. Use the table to inspect exact values.</div>
+                </div>
                 <div class="graph-wrap">
-                    <canvas id="graph" width="1200" height="720"></canvas>
+                    <canvas id="graph" width="1200" height="720" role="img" aria-label="Live pressure graph showing the current session over time"></canvas>
                 </div>
             </article>
 
             <aside class="panel">
-                <h2>Live Metrics</h2>
+                <div class="panel-header">
+                    <h2>Live Metrics</h2>
+                    <div class="panel-note">Filter the visible session, export the current view, or narrow samples by zone.</div>
+                </div>
+                <div class="controls" aria-label="Log monitor controls">
+                    <div class="control-group" role="group" aria-label="Session filter">
+                        <span class="control-label">Session</span>
+                        <div class="session-filters">
+                            <button type="button" class="filter-chip" data-session-filter="all" aria-pressed="true" aria-label="Show all sessions">All</button>
+                            <button type="button" class="filter-chip" data-session-filter="active" aria-pressed="false" aria-label="Show the active session only">Live</button>
+                            <button type="button" class="filter-chip" data-session-filter="completed" aria-pressed="false" aria-label="Show the completed session only">Completed</button>
+                            <button type="button" class="filter-chip" data-session-filter="idle" aria-pressed="false" aria-label="Show the idle state only">Idle</button>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="zone-filter">Zone</label>
+                        <select id="zone-filter" aria-label="Filter samples by zone">
+                            <option value="all">All zones</option>
+                            <option value="cold">Cold</option>
+                            <option value="green">Green</option>
+                            <option value="red">Red</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <span class="control-label">Export</span>
+                        <div class="export-actions">
+                            <button type="button" class="export-button" id="export-json" aria-label="Export the visible session as JSON">JSON</button>
+                            <button type="button" class="export-button" id="export-csv" aria-label="Export the visible session as CSV">CSV</button>
+                        </div>
+                    </div>
+                </div>
                 <div class="metrics" id="metrics"></div>
                 <div class="zones" aria-label="Zones">
                     <span class="zone-chip cold">Cold</span>
@@ -255,6 +462,19 @@
                     <span class="zone-chip red">Red</span>
                 </div>
                 <div class="details" id="details">Open this page on a tablet while logging is running.</div>
+                <div class="sr-only" id="table-help">The table below lists the visible samples for the selected session filter and zone filter.</div>
+                <div class="table-wrap" aria-describedby="table-help">
+                    <table aria-label="Visible log samples">
+                        <thead>
+                            <tr>
+                                <th scope="col">Time</th>
+                                <th scope="col">Pressure</th>
+                                <th scope="col">Zone</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sample-table-body"></tbody>
+                    </table>
+                </div>
             </aside>
         </section>
     </main>
@@ -268,13 +488,62 @@
         const subtitle = document.getElementById('subtitle');
         const statusDot = document.getElementById('status-dot');
         const statusText = document.getElementById('status-text');
+        const statusPill = document.getElementById('status-pill');
         const sessionPill = document.getElementById('session-pill');
         const samplePill = document.getElementById('sample-pill');
         const metrics = document.getElementById('metrics');
         const details = document.getElementById('details');
+        const zoneFilter = document.getElementById('zone-filter');
+        const exportJsonButton = document.getElementById('export-json');
+        const exportCsvButton = document.getElementById('export-csv');
+        const sampleTableBody = document.getElementById('sample-table-body');
+        const sessionFilterButtons = Array.from(document.querySelectorAll('[data-session-filter]'));
 
         const DANGER_THRESHOLD = 80;
         const COLD_THRESHOLD = 30;
+
+        const viewState = {
+            sessionFilter: 'all',
+            zoneFilter: 'all',
+            currentState: 'idle',
+            sessionId: null,
+            startedAt: null,
+            stoppedAt: null,
+            samples: [],
+            summary: null,
+            fileName: null,
+            filePath: null
+        };
+
+        function getVisibleSamples() {
+            const sessionMatches = viewState.sessionFilter === 'all' || viewState.sessionFilter === viewState.currentState;
+
+            if (!sessionMatches) {
+                return [];
+            }
+
+            return viewState.samples.filter(sample => {
+                if (viewState.zoneFilter === 'all') {
+                    return true;
+                }
+
+                return sample.zone === viewState.zoneFilter;
+            });
+        }
+
+        function updateStatusLabels() {
+            const statusLabel = viewState.currentState === 'active' ? 'Live' : viewState.currentState === 'completed' ? 'Completed' : 'Idle';
+            statusPill.setAttribute('aria-label', `Logging status: ${statusLabel}`);
+            sessionPill.setAttribute('aria-label', `Current session: ${viewState.sessionId || 'none'}`);
+            samplePill.setAttribute('aria-label', `Sample count: ${viewState.summary ? viewState.summary.sampleCount : viewState.samples.length}`);
+        }
+
+        function updateSessionFilterButtons() {
+            sessionFilterButtons.forEach(button => {
+                const isActive = button.dataset.sessionFilter === viewState.sessionFilter;
+                button.setAttribute('aria-pressed', String(isActive));
+            });
+        }
 
         function formatDuration(ms) {
             const totalSeconds = Math.max(0, ms) / 1000;
@@ -296,6 +565,67 @@
 
         function formatAbsoluteTime(timestamp) {
             return new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        }
+
+        function formatSampleTime(timestamp) {
+            return formatDuration(timestamp);
+        }
+
+        function createDownload(filename, content, mimeType) {
+            const blob = new Blob([content], { type: mimeType });
+            const urlObject = URL.createObjectURL(blob);
+            const anchor = document.createElement('a');
+            anchor.href = urlObject;
+            anchor.download = filename;
+            anchor.click();
+            setTimeout(() => URL.revokeObjectURL(urlObject), 0);
+        }
+
+        function exportVisibleSamples(format) {
+            const samples = getVisibleSamples();
+            const exportedAt = new Date().toISOString();
+            const baseName = viewState.sessionId || 'logging-session';
+
+            if (format === 'json') {
+                const payload = {
+                    exportedAt,
+                    sessionFilter: viewState.sessionFilter,
+                    zoneFilter: viewState.zoneFilter,
+                    state: viewState.currentState,
+                    sessionId: viewState.sessionId,
+                    startedAt: viewState.startedAt,
+                    stoppedAt: viewState.stoppedAt,
+                    summary: viewState.summary,
+                    samples
+                };
+
+                createDownload(`${baseName}-export.json`, `${JSON.stringify(payload, null, 2)}\n`, 'application/json');
+                return;
+            }
+
+            const header = ['time,pressure,zone'];
+            const rows = samples.map(sample => `${sample.timestamp},${sample.pressure},${sample.zone}`);
+            createDownload(`${baseName}-export.csv`, `${header.concat(rows).join('\n')}\n`, 'text/csv');
+        }
+
+        function renderSampleTable(samples) {
+            if (!samples.length) {
+                const sessionMatches = viewState.sessionFilter === 'all' || viewState.sessionFilter === viewState.currentState;
+                const message = sessionMatches
+                    ? 'No samples match the current zone filter.'
+                    : 'The current session filter hides this session.';
+
+                sampleTableBody.innerHTML = `<tr><td class="table-empty" colspan="3">${message}</td></tr>`;
+                return;
+            }
+
+            sampleTableBody.innerHTML = samples.map(sample => `
+                <tr>
+                    <td>${formatSampleTime(sample.timestamp)}</td>
+                    <td>${sample.pressure.toFixed(1)}%</td>
+                    <td><span class="sample-zone ${sample.zone}">${sample.zone}</span></td>
+                </tr>
+            `).join('');
         }
 
         function drawGraph(samples) {
@@ -398,6 +728,20 @@
             const summary = state.summary || null;
             const statusLabel = currentState === 'active' ? 'Live' : currentState === 'completed' ? 'Completed' : 'Idle';
 
+            viewState.currentState = currentState;
+            viewState.sessionId = state.sessionId || null;
+            viewState.startedAt = state.startedAt || null;
+            viewState.stoppedAt = state.stoppedAt || null;
+            viewState.summary = summary;
+            viewState.samples = samples;
+            viewState.fileName = state.fileName || null;
+            viewState.filePath = state.filePath || null;
+
+            updateStatusLabels();
+            updateSessionFilterButtons();
+
+            const visibleSamples = getVisibleSamples();
+
             statusDot.className = `dot ${currentState}`;
             statusText.textContent = statusLabel;
             sessionPill.textContent = `Session: ${state.sessionId || 'none'}`;
@@ -432,7 +776,11 @@
                 </div>
             `).join('');
 
-            drawGraph(samples);
+            drawGraph(visibleSamples);
+            renderSampleTable(visibleSamples);
+
+            exportJsonButton.disabled = !visibleSamples.length;
+            exportCsvButton.disabled = !visibleSamples.length;
         }
 
         async function refresh() {
@@ -447,8 +795,45 @@
                 details.textContent = 'Check the operator tablet or server connection, then reload this page.';
                 metrics.innerHTML = '';
                 drawGraph([]);
+                sampleTableBody.innerHTML = '<tr><td class="table-empty" colspan="3">Unable to load samples while offline.</td></tr>';
+                exportJsonButton.disabled = true;
+                exportCsvButton.disabled = true;
             }
         }
+
+        sessionFilterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                viewState.sessionFilter = button.dataset.sessionFilter;
+                updateSessionFilterButtons();
+                renderState({
+                    state: viewState.currentState,
+                    sessionId: viewState.sessionId,
+                    startedAt: viewState.startedAt,
+                    stoppedAt: viewState.stoppedAt,
+                    summary: viewState.summary,
+                    graphSamples: viewState.samples,
+                    fileName: viewState.fileName,
+                    filePath: viewState.filePath
+                });
+            });
+        });
+
+        zoneFilter.addEventListener('change', () => {
+            viewState.zoneFilter = zoneFilter.value;
+            renderState({
+                state: viewState.currentState,
+                sessionId: viewState.sessionId,
+                startedAt: viewState.startedAt,
+                stoppedAt: viewState.stoppedAt,
+                summary: viewState.summary,
+                graphSamples: viewState.samples,
+                fileName: viewState.fileName,
+                filePath: viewState.filePath
+            });
+        });
+
+        exportJsonButton.addEventListener('click', () => exportVisibleSamples('json'));
+        exportCsvButton.addEventListener('click', () => exportVisibleSamples('csv'));
 
         refresh();
         setInterval(refresh, 250);

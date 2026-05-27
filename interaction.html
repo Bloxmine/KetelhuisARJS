@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Valve Interaction</title>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="three.min.js.js"></script>
+    <script src="GLTFLoader.js.js"></script>
 
     <style>
         html, body {
@@ -770,11 +770,11 @@ async function startExperience() {
                     video.setAttribute('webkit-playsinline', 'true');
                     await video.play();
                 } else {
-                    setStatus('This device does not support camera access in the browser.', true);
+                    showStatus('This device does not support camera access in the browser.', true);
                 }
             } catch (error) {
                 console.error('Error accessing camera:', error);
-                setStatus('Camera access failed. Use HTTPS and allow camera permission.', true);
+                showStatus('Camera access failed. Use HTTPS and allow camera permission.', true);
             }
         }
 
