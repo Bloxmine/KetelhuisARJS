@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Klepinteractie</title>
+    <title>Valve Interaction</title>
 
     <script src="three.min.js.js"></script>
     <script src="GLTFLoader.js.js"></script>
@@ -260,117 +260,7 @@
             box-shadow: inset 0 0 10px rgba(255, 225, 179, 0.08);
         }
 
-        #end-screen {
-            position: absolute;
-            inset: 0;
-            z-index: 100;
-            display: none;
-            background: linear-gradient(135deg, rgba(5, 4, 3, 0.98), rgba(20, 15, 10, 0.96));
-            pointer-events: auto;
-            animation: fadeIn 0.6s ease-out;
-        }
-
-        #end-screen.visible {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 24px;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideUp {
-            from {
-                transform: translateY(30px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .end-screen-title {
-            font-size: 48px;
-            font-weight: 900;
-            color: #f7b731;
-            text-align: center;
-            animation: slideUp 0.8s ease-out;
-            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
-        }
-
-        .end-screen-stats {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            background: rgba(40, 30, 20, 0.8);
-            padding: 24px;
-            border-radius: 16px;
-            border: 2px solid rgba(236, 206, 140, 0.5);
-            animation: slideUp 0.8s ease-out 0.2s both;
-            max-width: 320px;
-            width: 90%;
-        }
-
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 16px;
-            color: #f2d8a3;
-        }
-
-        .stat-label {
-            font-weight: 600;
-        }
-
-        .stat-value {
-            font-weight: 900;
-            color: #f7b731;
-            font-size: 18px;
-        }
-
-        .end-screen-button {
-            pointer-events: auto;
-            background: linear-gradient(135deg, #f7b731, #fa8231);
-            color: #111;
-            font-weight: 800;
-            border: none;
-            border-radius: 999px;
-            padding: 14px 32px;
-            font-size: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-            cursor: pointer;
-            animation: slideUp 0.8s ease-out 0.4s both;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .end-screen-button:active {
-            transform: scale(0.98);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
-        }
-
         @media (max-width: 768px) {
-            .end-screen-title {
-                font-size: 36px;
-            }
-
-            .end-screen-stats {
-                padding: 20px;
-            }
-
-            .stat-row {
-                font-size: 14px;
-            }
-
             .meters-container {
                 width: min(26vw, 118px);
                 right: 10px;
@@ -392,28 +282,9 @@
     <canvas id="three-canvas"></canvas>
 
     <div id="ui-layer">
-        <button id="start-button">Ervaring starten</button>
+        <button id="start-button">Start Experience</button>
         <div id="timer" class="instructions" style="top:10px; left:50%; transform:translateX(-50%); max-width:160px;">02:00</div>
         <div id="status-message"></div>
-
-        <div id="end-screen">
-            <div class="end-screen-title">Ervaring voltooid!</div>
-            <div class="end-screen-stats">
-                <div class="stat-row">
-                    <span class="stat-label">Linkerkraan:</span>
-                    <span class="stat-value" id="final-valve1">0%</span>
-                </div>
-                <div class="stat-row">
-                    <span class="stat-label">Rechterkraan:</span>
-                    <span class="stat-value" id="final-valve2">0%</span>
-                </div>
-                <div class="stat-row">
-                    <span class="stat-label">Gemiddelde druk:</span>
-                    <span class="stat-value" id="final-average">0%</span>
-                </div>
-            </div>
-            <button class="end-screen-button" id="end-restart-button">Opnieuw spelen</button>
-        </div>
 
         <div class="meters-container">
             <div class="steam-gauge" aria-label="Steam pressure gauge">
@@ -519,17 +390,6 @@ renderer.setSize(window.innerWidth, window.innerHeight);
         scene.add(rigRoot);
 
         const valveStates = { valve1: 0, valve2: 0 };
-        // Restore valve states from localStorage if available
-        const savedValveStates = localStorage.getItem('valveStates');
-        if (savedValveStates) {
-            try {
-                const parsed = JSON.parse(savedValveStates);
-                valveStates.valve1 = parsed.valve1 || 0;
-                valveStates.valve2 = parsed.valve2 || 0;
-            } catch (e) {
-                console.log('Could not parse saved valve states');
-            }
-        }
         // Resistance state controls how 'stiff' a valve is when interacting.
         // multiplier > 1 makes the wheel respond slower to dragging (needs more drag).
         const valveResistance = {
@@ -586,13 +446,6 @@ function updateSteamGauge() {
             }
 
             updateSteamGauge();
-            
-            // Save to localStorage for persistence
-            try {
-                localStorage.setItem('valveStates', JSON.stringify(valveStates));
-            } catch (e) {
-                console.log('Could not save valve states to localStorage');
-            }
 
             if (shouldSync) {
                 fetch(`${serverBaseUrl}/valve-state`, {
@@ -626,30 +479,6 @@ function updateSteamGauge() {
                     resolve(pivot);
                 }, undefined, reject);
             });
-        }
-
-        function cleanupScene() {
-            // Remove all old meshes from the scene and dispose their resources
-            for (const key of Object.keys(wheelMeshes)) {
-                const mesh = wheelMeshes[key];
-                if (mesh) {
-                    // Recursively dispose all geometries and materials
-                    mesh.traverse((child) => {
-                        if (child.geometry) {
-                            child.geometry.dispose();
-                        }
-                        if (child.material) {
-                            if (Array.isArray(child.material)) {
-                                child.material.forEach(mat => mat.dispose());
-                            } else {
-                                child.material.dispose();
-                            }
-                        }
-                    });
-                    rigRoot.remove(mesh);
-                    delete wheelMeshes[key];
-                }
-            }
         }
 
         async function buildScene() {
@@ -794,7 +623,7 @@ function updateSteamGauge() {
                 r.endTime = Date.now() + duration;
                 r.active = true;
                 r.phase = Math.random() * Math.PI * 2;
-                showStatus('Klep zit vast — meer kracht nodig!', false);
+                showStatus('Valve is stiff — apply more force!', false);
                 setTimeout(hideStatus, 1600);
             }
         }
@@ -832,7 +661,7 @@ function updateSteamGauge() {
                     const slipAmount = 3 + Math.random() * 8; // 3-11 percent
                     const next = Math.max(0, valveStates[key] - slipAmount);
                     updateWheelRotation(key, next, true);
-                    showStatus('Klep is teruggegleden!', false);
+                    showStatus('Valve slipped back!', false);
                     setTimeout(hideStatus, 900);
                     // small chance to also trigger a temporary stiff resistance
                     if (Math.random() < 0.25) {
@@ -856,37 +685,12 @@ function updateSteamGauge() {
             animationStarted = false;
             isAudioUnlocked && audio.pause();
             isAudioUnlocked && steamHissing.pause();
-            
+            showStatus("Time's up — experience ended.", false);
             document.getElementById('timer').textContent = '00:00';
-            
-            // Show end screen with statistics
-            const finalValve1 = Math.round(valveStates.valve1);
-            const finalValve2 = Math.round(valveStates.valve2);
-            const finalAverage = Math.round((finalValve1 + finalValve2) / 2);
-            
-            // Save final stats to localStorage for persistence
-            try {
-                const finalStats = {
-                    valve1: finalValve1,
-                    valve2: finalValve2,
-                    average: finalAverage,
-                    timestamp: new Date().toISOString()
-                };
-                localStorage.setItem('finalStats', JSON.stringify(finalStats));
-            } catch (e) {
-                console.log('Could not save final stats to localStorage');
-            }
-            
-            document.getElementById('final-valve1').textContent = `${finalValve1}%`;
-            document.getElementById('final-valve2').textContent = `${finalValve2}%`;
-            document.getElementById('final-average').textContent = `${finalAverage}%`;
-            
-            document.getElementById('end-screen').classList.add('visible');
-            const metersContainer = document.querySelector('.meters-container');
-            if (metersContainer) {
-                metersContainer.style.opacity = '0.3';
-                metersContainer.style.pointerEvents = 'none';
-            }
+            // reveal restart button
+            const btn = document.getElementById('start-button');
+            btn.textContent = 'Restart';
+            btn.classList.remove('hidden');
         }
 
         async function syncInitialValveState() {
@@ -911,35 +715,6 @@ function updateSteamGauge() {
 async function startExperience() {
     if (animationStarted) return;
 
-    // Clean up old scene meshes to prevent memory leak
-    cleanupScene();
-
-    // Reset end screen and show start button again
-    document.getElementById('end-screen').classList.remove('visible');
-    const metersContainer = document.querySelector('.meters-container');
-    if (metersContainer) {
-        metersContainer.style.opacity = '1';
-        metersContainer.style.pointerEvents = 'auto';
-    }
-    
-    // Reset valve states
-    valveStates.valve1 = 0;
-    valveStates.valve2 = 0;
-    // Also reset in localStorage for new session
-    try {
-        localStorage.setItem('valveStates', JSON.stringify(valveStates));
-    } catch (e) {
-        console.log('Could not reset valve states in localStorage');
-    }
-    
-    for (const key of Object.keys(wheelMeshes)) {
-        if (Object.prototype.hasOwnProperty.call(valveStates, key)) {
-            const g = wheelMeshes[key];
-            if (g) g.userData.baseAngle = 0;
-        }
-    }
-    updateSteamGauge();
-
     // Attempt to unlock audio directly from this user gesture (Safari-friendly)
     await tryUnlockAudio();
 
@@ -954,7 +729,7 @@ async function startExperience() {
         audio.volume = 0.4;
     } else {
         // If still locked, show a hint so the user can tap to enable sound
-        showStatus('Tik op het scherm om geluid in te schakelen.', false);
+        showStatus('Tap the screen to enable audio.', false);
         setTimeout(hideStatus, 2200);
     }
 
@@ -995,16 +770,15 @@ async function startExperience() {
                     video.setAttribute('webkit-playsinline', 'true');
                     await video.play();
                 } else {
-                    setStatus('Dit apparaat ondersteunt geen camera-toegang in de browser.', true);
+                    showStatus('This device does not support camera access in the browser.', true);
                 }
             } catch (error) {
                 console.error('Error accessing camera:', error);
-                setStatus('Camera-toegang mislukt. Gebruik HTTPS en sta camera-toestemming toe.', true);
+                showStatus('Camera access failed. Use HTTPS and allow camera permission.', true);
             }
         }
 
         document.getElementById('start-button').addEventListener('click', startExperience);
-        document.getElementById('end-restart-button').addEventListener('click', startExperience);
         window.addEventListener('pointerdown', onPointerDown, { passive: false });
         window.addEventListener('pointermove', onPointerMove, { passive: false });
         window.addEventListener('pointerup', onPointerUp);
@@ -1016,29 +790,6 @@ async function startExperience() {
         });
 
         updateSteamGauge();
-        
-        // Restore final stats from previous session if available
-        try {
-            const savedFinalStats = localStorage.getItem('finalStats');
-            if (savedFinalStats) {
-                const stats = JSON.parse(savedFinalStats);
-                document.getElementById('final-valve1').textContent = `${stats.valve1}%`;
-                document.getElementById('final-valve2').textContent = `${stats.valve2}%`;
-                document.getElementById('final-average').textContent = `${stats.average}%`;
-                // Check if end-screen is already visible from a previous session
-                const endScreen = document.getElementById('end-screen');
-                if (endScreen && endScreen.classList.contains('visible')) {
-                    // Stats are already showing
-                } else if (window.location.hash === '#show-stats') {
-                    // If we have a hash flag, show the stats
-                    endScreen.classList.add('visible');
-                    document.querySelector('.meters-container').style.opacity = '0.3';
-                    document.querySelector('.meters-container').style.pointerEvents = 'none';
-                }
-            }
-        } catch (e) {
-            console.log('Could not restore final stats from localStorage');
-        }
     </script>
 </body>
 </html>

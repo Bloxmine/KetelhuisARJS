@@ -1,3 +1,6 @@
+// Author: Hein Dijstelbloem
+// Data: 2026-06-11
+// Description: This server manages valve states and logs pressure data for a system. It provides API endpoints for getting and updating valve states, as well as starting, sampling, and stopping logging sessions. The server also serves static files from the current directory. It uses HTTPS for secure communication and includes CORS headers to allow cross-origin requests. Logging sessions are stored in JSONL format in a "logs" directory, with summaries and graph samples generated for each session.
 // node valve-sync-server.js
 const http = require('http');
 const https = require('https');
@@ -242,19 +245,18 @@ const mimeTypes = {
   '.glb': 'model/gltf-binary'
 };
 
-// Create HTTPS server (for secure communication)
+// creating https
 const options = {
   key: fs.readFileSync(path.join(__dirname, 'server.key'), 'utf8'),
   cert: fs.readFileSync(path.join(__dirname, 'server.cert'), 'utf8')
 };
 
 const server = https.createServer(options, (req, res) => {
-  // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // Handle preflight requests
+  // freflight
   if (req.method === 'OPTIONS') {
     res.writeHead(200);
     res.end();
@@ -435,10 +437,11 @@ const server = https.createServer(options, (req, res) => {
     return;
   }
 
-  // Static file serving
+  // static file serving
   let filePath = path.join(__dirname, pathname);
   
-  // Default to index.html if root is requested
+  // default to index.html if root is requested
+  // dont know if this is needed, can remove?
   if (pathname === '/') {
     filePath = path.join(__dirname, 'index.html');
   }
@@ -450,11 +453,11 @@ const server = https.createServer(options, (req, res) => {
       return;
     }
 
-    // Get MIME type
+    // get mime type, this is for better logging and can be used for future enhancements like compression or caching
     const ext = path.extname(filePath);
     const mimeType = mimeTypes[ext] || 'application/octet-stream';
 
-    // Read and serve the file
+    // read and serve
     fs.readFile(filePath, (err, data) => {
       if (err) {
         res.writeHead(500, { 'Content-Type': 'text/plain' });
@@ -469,7 +472,7 @@ const server = https.createServer(options, (req, res) => {
     });
   });
 });
-
+// starting the server now
 const PORT = 3000;
 server.listen(PORT, () => {
   console.log(`Valve sync server running on https://localhost:${PORT}`);

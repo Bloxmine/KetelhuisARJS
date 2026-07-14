@@ -52,6 +52,8 @@
             background: rgba(0, 0, 0, 0.7);
             box-shadow: 0 0 50px rgba(0,0,0,0.8), inset 0 0 20px rgba(181, 137, 33, 0.2);
             border-radius: 10px;
+            max-width: 600px;
+            width: 90%;
         }
 
         /* The Logo with a subtle "vibration" as if a machine is running */
@@ -68,17 +70,139 @@
             50% { transform: translateY(-5px); filter: brightness(1.2); }
         }
 
-        .startbutton {
-            margin-top: 50px;
-            display: flex;
-            justify-content: center;
+        /* NEW: Difficulty Slider Container Styles */
+        .difficulty-container {
+            margin-top: 40px;
+            padding: 20px;
+            border: 2px solid rgba(181, 137, 33, 0.4);
+            border-radius: 8px;
+            background: rgba(15, 15, 15, 0.6);
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.8);
         }
 
-        .choice-buttons {
+        .difficulty-title {
+            color: var(--brass);
+            font-size: 20px;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            font-weight: bold;
+        }
+
+        .slider-wrapper {
+            position: relative;
+            margin: 20px 10px 10px;
+        }
+
+        /* Custom Steampunk Range Input Styling */
+        .steampunk-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 12px;
+            border-radius: 6px;
+            background: linear-gradient(90deg, #1f1f1f, #2d2d2d);
+            border: 2px solid var(--brass);
+            outline: none;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+        }
+
+        /* Slider Thumb - Designed to look like a gold rivet / gear center */
+        .steampunk-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #ffe194 0%, var(--brass) 70%, #5d4304 100%);
+            border: 2px solid #fff;
+            box-shadow: 0 0 10px rgba(181,137,33,0.8), 0 3px 6px rgba(0,0,0,0.4);
+            cursor: pointer;
+            transition: transform 0.1s ease;
+        }
+        .steampunk-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+        }
+        .steampunk-slider::-webkit-slider-thumb:active {
+            transform: scale(0.95);
+        }
+
+        /* Firefox equivalent thumb styling */
+        .steampunk-slider::-moz-range-thumb {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #ffe194 0%, var(--brass) 70%, #5d4304 100%);
+            border: 2px solid #fff;
+            box-shadow: 0 0 10px rgba(181,137,33,0.8), 0 3px 6px rgba(0,0,0,0.4);
+            cursor: pointer;
+            transition: transform 0.1s ease;
+        }
+
+        /* Interactive Icon Indicator styling */
+        .age-indicator-panel {
             display: flex;
-            gap: 18px;
-            flex-wrap: wrap;
-            justify-content: center;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding: 0 5px;
+        }
+
+        .age-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0.4;
+            transition: all 0.3s ease;
+        }
+
+        .age-node.active {
+            opacity: 1;
+            transform: scale(1.15);
+            text-shadow: 0 0 8px var(--copper);
+        }
+
+        .age-icon {
+            width: 32px;
+            height: 32px;
+            fill: var(--brass);
+            margin-bottom: 5px;
+            transition: fill 0.3s ease;
+        }
+
+        .age-node.active .age-icon {
+            fill: #fff;
+            filter: drop-shadow(0 0 5px var(--copper));
+        }
+
+        .age-label {
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--brass);
+        }
+
+        .age-node.active .age-label {
+            color: #fff;
+        }
+
+        /* Live age readout details */
+        .live-readout {
+            font-size: 18px;
+            color: #fff;
+            margin-top: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .live-readout span {
+            color: var(--brass);
+            border-bottom: 1px dashed var(--brass);
+            padding-bottom: 2px;
+        }
+
+        .startbutton {
+            margin-top: 35px;
         }
 
         /* Steampunk Button Style */
@@ -128,6 +252,50 @@
     <div class="main-content">
         <img class="logo" src="images/logo.png" alt="Ketelhuis AR Logo">
         
+        <!-- NEW: Large Steampunk Difficulty / Age Range Selector -->
+        <div class="difficulty-container">
+            <div class="difficulty-title">KIES JE MOEILIJKHEIDSGRAAD (LEEFTIJD)</div>
+            
+            <div class="slider-wrapper">
+                <input type="range" id="age-slider" class="steampunk-slider" min="4" max="12" value="8" step="1">
+            </div>
+
+            <!-- Nodes underneath corresponding to the tiers: Easy (4), Medium (8), Hard (12) -->
+            <div class="age-indicator-panel">
+                <!-- Age 4 (Easy) -->
+                <div class="age-node" id="node-4">
+                    <!-- Little cogwheel representing starter level -->
+                    <svg class="age-icon" viewBox="0 0 24 24">
+                        <path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm0 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0-10l1.5 2.5h-3L12 4zm0 16l-1.5-2.5h3L12 20zm-8-8l2.5 1.5v-3L4 12zm16 0l-2.5-1.5v3L20 12z" />
+                    </svg>
+                    <div class="age-label">4 Jaar</div>
+                </div>
+
+                <!-- Age 8 (Normal/Medium) -->
+                <div class="age-node" id="node-8">
+                    <!-- Medium dual gear icon -->
+                    <svg class="age-icon" viewBox="0 0 24 24">
+                        <path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/>
+                    </svg>
+                    <div class="age-label">8 Jaar</div>
+                </div>
+
+                <!-- Age 12 (Hard/Expert) -->
+                <div class="age-node" id="node-12">
+                    <!-- Complex clockwork gauge icon -->
+                    <svg class="age-icon" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10" stroke-width="2" fill="none" stroke="currentColor" />
+                        <path d="M12 6v6l4 2" stroke-width="2" stroke-linecap="round" fill="none" stroke="currentColor" />
+                    </svg>
+                    <div class="age-label">12 Jaar</div>
+                </div>
+            </div>
+
+            <!-- Dynamic narrative readout telling them what this level means -->
+            <div class="live-readout" id="difficulty-readout">
+                Geselecteerd: <span id="age-val">8</span> Jaar Oud (<span id="level-desc">Gemiddeld</span>)
+            </div>
+        </div>
         <div class="startbutton">
             <div class="choice-buttons">
                 <a href="story.html?choice=cabinet" class="btn-steampunk" id="start-cabinet">
@@ -139,14 +307,55 @@
             </div>
         </div>
     </div>
+    </div>
 
     <script>
-        document.getElementById('start-cabinet').addEventListener('click', function() {
-            console.log("Engine Engaged - Cabinet path selected.");
+        const slider = document.getElementById('age-slider');
+        const ageVal = document.getElementById('age-val');
+        const levelDesc = document.getElementById('level-desc');
+
+        function updateDifficultyUI(age) {
+            ageVal.textContent = age;
+            
+            // Determine active node styling & difficulty descriptions
+            document.querySelectorAll('.age-node').forEach(node => node.classList.remove('active'));
+            
+            let description = "";
+            let mode = "";
+
+            if (age <= 6) {
+                description = "Makkelijk";
+                mode = "easy";
+                document.getElementById('node-4').classList.add('active');
+            } else if (age <= 9) {
+                description = "Gemiddeld";
+                mode = "medium";
+                document.getElementById('node-8').classList.add('active');
+            } else {
+                description = "Moeilijk";
+                mode = "hard";
+                document.getElementById('node-12').classList.add('active');
+            }
+
+            levelDesc.textContent = description;
+
+            // Save the chosen age and mechanical difficulty mode for downstream pages
+            localStorage.setItem('selectedAge', age);
+            localStorage.setItem('gameDifficulty', mode);
+        }
+
+        // Initialize from last saved preference or default to 8
+        const initialAge = localStorage.getItem('selectedAge') || 8;
+        slider.value = initialAge;
+        updateDifficultyUI(initialAge);
+
+        // Update values on slide interaction
+        slider.addEventListener('input', function() {
+            updateDifficultyUI(this.value);
         });
 
-        document.getElementById('start-interaction').addEventListener('click', function() {
-            console.log("Engine Engaged - Interaction path selected.");
+        document.getElementById('start-trigger').addEventListener('click', function() {
+            console.log("Engine Engaged - Difficulty saved: " + localStorage.getItem('gameDifficulty'));
         });
     </script>
 </body>

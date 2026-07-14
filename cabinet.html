@@ -666,13 +666,22 @@ difficultyBtns.forEach(btn => {
     });
 });
 
-// Initialize with Medium difficulty as default
-const mediumBtn = document.querySelector('[data-difficulty="medium"]');
-if (mediumBtn) {
-    mediumBtn.classList.add('active');
-    currentDifficulty = 'medium';
-    updateGreenZone();
+// --- DIFFICULTY LOADER FROM LOCALSTORAGE ---
+// Retrieve selection from the slider ('easy', 'medium', 'hard')
+const savedDifficulty = localStorage.getItem('gameDifficulty') || 'medium';
+currentDifficulty = savedDifficulty;
+
+// Find the corresponding button in the settings modal and highlight it
+const activeBtn = document.querySelector(`[data-difficulty="${currentDifficulty}"]`);
+if (activeBtn) {
+    // Clear active status on all difficulty buttons
+    difficultyBtns.forEach(b => b.classList.remove('active'));
+    // Set active status on the loaded one
+    activeBtn.classList.add('active');
 }
+
+// Apply loaded thresholds and update the gauge's green zone
+updateGreenZone();
 
 function updateGreenZone() {
     const settings = difficultySettings[currentDifficulty];
