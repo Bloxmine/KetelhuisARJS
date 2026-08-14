@@ -18,12 +18,12 @@
                 extend: {
                     colors: {
                         brass: '#b58921',
-                        brassLight: '#e0b353',
+                        brassLight: '#f5d77f',
                         brassDark: '#5d4304',
                         copper: '#b87333',
-                        copperLight: '#d98a4e',
-                        iron: '#1f1f1f',
-                        steamGlow: '#00f0ff'
+                        copperLight: '#e29352',
+                        iron: '#121212',
+                        ironCard: '#1c1a17'
                     },
                     fontFamily: {
                         cinzel: ['Cinzel', 'serif'],
@@ -45,10 +45,8 @@
             --brass-dark: #5d4304;
             --copper: #b87333;
             --copper-light: #e29352;
-            --iron-dark: #121212;
-            --iron-card: #1c1a17;
-            --steam-white: rgba(255, 255, 255, 0.15);
-            --neon-glow: rgba(224, 179, 83, 0.4);
+            --iron-dark: #0f0d0b;
+            --iron-card: #1a1714;
         }
 
         * {
@@ -63,14 +61,13 @@
             margin: 0;
             padding: 0;
             min-height: 100vh;
-            overflow-x: hidden;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
+            overflow-x: hidden;
         }
 
-        /* Canvas background behind content */
+        /* Animated background canvas */
         #bg-canvas {
             position: fixed;
             top: 0;
@@ -81,33 +78,32 @@
             pointer-events: none;
         }
 
-        /* Main Container Styling */
+        /* Steampunk Outer Frame */
         .steampunk-frame {
             position: relative;
             z-index: 10;
-            background: radial-gradient(circle at center, rgba(35, 30, 25, 0.95) 0%, rgba(15, 13, 11, 0.98) 100%);
-            border: 4px solid var(--brass);
+            background: radial-gradient(circle at center, #241f19 0%, #110e0b 100%);
+            border: 3px solid var(--brass);
             box-shadow: 
-                0 0 30px rgba(0, 0, 0, 0.9),
-                inset 0 0 25px rgba(181, 137, 33, 0.25),
-                0 0 15px var(--brass-dark);
-            border-radius: 16px;
-            padding: 2rem;
-            max-width: 900px;
-            width: 94%;
+                0 0 35px rgba(0, 0, 0, 0.95),
+                inset 0 0 20px rgba(181, 137, 33, 0.2),
+                0 0 10px rgba(93, 67, 4, 0.8);
+            border-radius: 18px;
+            padding: 2.25rem;
+            max-width: 860px;
+            width: 95%;
             margin: 20px auto;
-            backdrop-filter: blur(8px);
         }
 
-        /* Ornate Metallic Corner Plates */
+        /* Corner Rivets / Bolts */
         .corner-rivet {
             position: absolute;
-            width: 18px;
-            height: 18px;
-            background: radial-gradient(circle at 30% 30%, #fff, var(--brass) 60%, var(--brass-dark) 100%);
+            width: 16px;
+            height: 16px;
+            background: radial-gradient(circle at 35% 35%, #fff 0%, var(--brass-light) 30%, var(--brass) 70%, var(--brass-dark) 100%);
             border-radius: 50%;
-            border: 1px solid #111;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            border: 1px solid #1a1005;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.9);
             z-index: 20;
         }
         .corner-tl { top: 12px; left: 12px; }
@@ -115,211 +111,151 @@
         .corner-bl { bottom: 12px; left: 12px; }
         .corner-br { bottom: 12px; right: 12px; }
 
-        /* Nixie Tube Digital Display */
+        /* Nixie Digital Display Box */
         .nixie-display {
-            background: #080503;
-            border: 2px solid var(--copper);
-            border-radius: 8px;
-            padding: 8px 16px;
+            background: #0d0803;
+            border: 2px solid var(--copper-light);
+            border-radius: 6px;
+            padding: 4px 14px;
             font-family: 'Special Elite', monospace;
-            color: #ff9900;
+            color: #ff9d00;
             text-shadow: 0 0 10px #ff6600, 0 0 20px #ff3300;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.9), 0 0 8px rgba(184, 115, 51, 0.4);
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.9), 0 0 10px rgba(184, 115, 51, 0.3);
             letter-spacing: 2px;
         }
 
-        /* Analog Gauge Widget */
-        .gauge-outer {
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            background: radial-gradient(circle, #2b261f 0%, #0d0c0a 100%);
-            border: 4px solid var(--brass);
-            box-shadow: inset 0 0 15px #000, 0 4px 10px rgba(0,0,0,0.6);
+        /* Center Steampunk Pipe Divider with Pressure Gauge Dial */
+        .pipe-divider-container {
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto;
-        }
-        .gauge-dial {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            border: 1px dashed rgba(181, 137, 33, 0.4);
-            position: relative;
-        }
-        .gauge-needle {
-            position: absolute;
-            width: 4px;
-            height: 52px;
-            background: linear-gradient(to top, #d9534f, #ff8080);
-            bottom: 50%;
-            left: calc(50% - 2px);
-            transform-origin: bottom center;
-            transform: rotate(-60deg);
-            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-            border-radius: 2px;
-            box-shadow: 0 0 6px rgba(217, 83, 79, 0.8);
-        }
-        .gauge-center {
-            position: absolute;
-            width: 16px;
-            height: 16px;
-            background: var(--brass-light);
-            border: 2px solid var(--brass-dark);
-            border-radius: 50%;
-            z-index: 5;
-        }
-
-        /* Custom Steampunk Range Slider */
-        .steampunk-slider {
-            -webkit-appearance: none;
-            appearance: none;
+            margin: 2rem 0;
             width: 100%;
-            height: 14px;
-            border-radius: 7px;
-            background: linear-gradient(90deg, #12100e, #2d261e, #12100e);
-            border: 2px solid var(--brass);
-            outline: none;
-            box-shadow: inset 0 2px 6px rgba(0,0,0,0.8);
-        }
-        .steampunk-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #fff 0%, var(--brass-light) 30%, var(--brass) 70%, var(--brass-dark) 100%);
-            border: 2px solid #fff;
-            box-shadow: 0 0 12px var(--brass), 0 4px 8px rgba(0,0,0,0.6);
-            cursor: pointer;
-            transition: transform 0.15s ease;
-        }
-        .steampunk-slider::-webkit-slider-thumb:hover {
-            transform: scale(1.15);
-        }
-        .steampunk-slider::-moz-range-thumb {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #fff 0%, var(--brass-light) 30%, var(--brass) 70%, var(--brass-dark) 100%);
-            border: 2px solid #fff;
-            box-shadow: 0 0 12px var(--brass), 0 4px 8px rgba(0,0,0,0.6);
-            cursor: pointer;
-            transition: transform 0.15s ease;
         }
 
-        /* Interactive Buttons */
-        .btn-steampunk-lg {
+        .steam-pipe {
+            position: absolute;
+            width: 100%;
+            height: 12px;
+            background: linear-gradient(180deg, #d49a43 0%, #b58921 30%, #5d4304 80%, #291b01 100%);
+            border-top: 1px solid #ffe1a0;
+            border-bottom: 1px solid #1a0f00;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.7);
+            border-radius: 6px;
+        }
+
+        /* Pressure Gauge Widget */
+        .pressure-gauge {
             position: relative;
-            display: inline-flex;
+            z-index: 5;
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #f9f5ea 0%, #d8cbaf 70%, #9e8e6b 100%);
+            border: 4px solid var(--brass);
+            outline: 2px solid var(--brass-dark);
+            box-shadow: 0 0 15px rgba(0,0,0,0.8), inset 0 0 8px rgba(0,0,0,0.4);
+            display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
-            background: linear-gradient(180deg, #3a3227 0%, #1a1611 100%);
-            border: 3px solid var(--brass);
+        }
+
+        .gauge-face {
+            position: relative;
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            border: 1px dashed rgba(93, 67, 4, 0.5);
+        }
+
+        .gauge-needle {
+            position: absolute;
+            width: 3px;
+            height: 24px;
+            background: #cc2222;
+            bottom: 50%;
+            left: calc(50% - 1.5px);
+            transform-origin: bottom center;
+            transform: rotate(-45deg);
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border-radius: 2px;
+            box-shadow: 0 0 4px rgba(204, 34, 34, 0.8);
+        }
+
+        .gauge-cap {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--brass-dark);
+            border: 2px solid var(--brass-light);
+            border-radius: 50%;
+            z-index: 6;
+        }
+
+        /* Age Tier Selector Buttons */
+        .tier-card {
+            background: linear-gradient(180deg, #2b251e 0%, #181410 100%);
+            border: 2px solid #4a3e31;
+            border-radius: 10px;
+            padding: 12px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.08), 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .tier-card:hover {
+            border-color: var(--brass-light);
+            transform: translateY(-2px);
+        }
+
+        .tier-card.active {
+            background: linear-gradient(180deg, #594212 0%, #261b05 100%);
+            border: 2px solid var(--brass-light);
+            box-shadow: 0 0 15px rgba(245, 215, 127, 0.4), inset 0 0 10px rgba(181, 137, 33, 0.5);
+        }
+
+        /* Steampunk Action Buttons */
+        .btn-steampunk {
+            background: linear-gradient(180deg, #403422 0%, #1f180e 100%);
+            border: 2px solid var(--brass);
             color: var(--brass-light);
             font-family: 'Cinzel', serif;
             font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            padding: 16px 32px;
+            letter-spacing: 1.5px;
+            padding: 12px 20px;
             border-radius: 8px;
-            box-shadow: 0 6px 16px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.2);
-            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.15);
+            transition: all 0.2s ease;
             cursor: pointer;
-            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
-        .btn-steampunk-lg::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-            transform: rotate(45deg);
-            transition: 0.5s;
-        }
-        .btn-steampunk-lg:hover::before {
-            left: 100%;
-        }
-        .btn-steampunk-lg:hover {
-            border-color: var(--copper-light);
+
+        .btn-steampunk:hover {
+            border-color: #ffe1a0;
             color: #ffffff;
-            box-shadow: 0 0 25px var(--brass), inset 0 0 10px rgba(184, 115, 51, 0.5);
-            transform: translateY(-3px);
+            box-shadow: 0 0 18px rgba(224, 179, 83, 0.6);
+            transform: translateY(-2px);
         }
-        .btn-steampunk-lg:active {
+
+        .btn-steampunk:active {
             transform: translateY(1px);
         }
 
-        /* Valve Turn Wheel */
-        .valve-wheel {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            border: 8px solid #a83232;
-            background: radial-gradient(circle, #4a1212 0%, #1a0505 100%);
-            box-shadow: inset 0 0 10px #000, 0 4px 8px rgba(0,0,0,0.8);
-            position: relative;
-            cursor: pointer;
-            transition: transform 0.8s ease-out;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .valve-wheel::before, .valve-wheel::after {
-            content: '';
-            position: absolute;
-            background: #a83232;
-        }
-        .valve-wheel::before { width: 100%; height: 6px; }
-        .valve-wheel::after { width: 6px; height: 100%; }
-
-        /* Steam Pipe Burst Animation */
-        @keyframes steamPuff {
-            0% { opacity: 0.8; transform: scale(0.2) translateY(0); }
-            100% { opacity: 0; transform: scale(2.5) translateY(-60px); }
-        }
-        .steam-puff {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            background: radial-gradient(circle, rgba(240,240,250,0.8) 0%, rgba(200,200,220,0) 70%);
-            border-radius: 50%;
-            pointer-events: none;
-            animation: steamPuff 1.2s forwards ease-out;
-        }
-
-        /* Custom Tabs */
-        .tab-btn {
-            border-bottom: 3px solid transparent;
-            transition: all 0.3s ease;
-        }
-        .tab-btn.active {
-            border-color: var(--brass);
-            color: var(--brass-light);
-            background: rgba(181, 137, 33, 0.1);
-        }
-
-        /* Pulse FX */
-        .pulse-glow {
-            animation: pulseGlow 2.5s infinite alternate;
-        }
-        @keyframes pulseGlow {
-            from { text-shadow: 0 0 5px var(--brass), 0 0 10px var(--brass-dark); }
-            to { text-shadow: 0 0 15px var(--brass-light), 0 0 30px var(--copper); }
+        /* Subtle Glow animations */
+        .title-glow {
+            text-shadow: 0 0 12px rgba(245, 215, 127, 0.5), 0 0 25px rgba(181, 137, 33, 0.3);
         }
     </style>
 </head>
 <body>
 
-    <!-- Background Steam & Gear Canvas -->
     <canvas id="bg-canvas"></canvas>
 
-    <!-- Main Steampunk Interface Shell -->
     <div class="steampunk-frame">
         <!-- Corner Rivets -->
         <div class="corner-rivet corner-tl"></div>
@@ -327,172 +263,167 @@
         <div class="corner-rivet corner-bl"></div>
         <div class="corner-rivet corner-br"></div>
 
-        <!-- Top Header Bar -->
-        <div class="flex flex-col items-center text-center border-b-2 border-amber-900/60 pb-6 mb-6">
-            <h1 class="text-3xl md:text-4xl font-cinzelDeco font-bold text-brass-light pulse-glow tracking-wider">
+        <!-- Header -->
+        <div class="text-center border-b border-amber-900/40 pb-4 mb-6">
+            <h1 class="text-3xl md:text-4xl font-cinzelDeco font-bold text-brassLight title-glow tracking-widest">
                 KETELHUIS AR
             </h1>
-            <p class="text-sm font-typewriter text-stone-400 mt-1">
-                ERVARING
-            </p>
         </div>
 
-        <!-- Age & Difficulty Selector -->
-        <div id="tab-difficulty" class="space-y-6">
-            <div class="bg-black/40 p-5 rounded-xl border border-brass/30">
-                <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-4">
-                    <div>
-                        <h2 class="text-lg font-cinzel text-brass-light font-bold flex items-center gap-2">
-                            <i class="fa-solid fa-user-gear"></i> SELECTEER DE SPELER LEEFTIJD
-                        </h2>
-                        <p class="text-xs font-typewriter text-stone-400">
-                            Maakt het spel moeilijker of makkelijker op basis van de leeftijd van de speler.
-                        </p>
-                    </div>
-
-                    <!-- Live Nixie Tube Output -->
-                    <div class="flex items-center gap-3">
-                        <span class="text-xs font-typewriter text-stone-400">INSTELLING:</span>
-                        <div class="nixie-display text-2xl font-bold" id="nixie-age">
-                            08 JAAR
-                        </div>
-                    </div>
+        <!-- STAP 1: Leeftijdsselectie -->
+        <div class="space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                    <h2 class="text-sm md:text-base font-cinzel font-bold text-amber-400 flex items-center gap-2">
+                        STAP 1: SELECTEER DE SPELER LEEFTIJD
+                    </h2>
+                    <p class="text-[11px] font-typewriter text-stone-400">
+                        Maakt het spel moeilijker of makkelijker op basis van de leeftijd van de speler.
+                    </p>
                 </div>
 
-                <!-- Custom Slider -->
-                <div class="px-2 py-4">
-                    <input type="range" id="age-slider" class="steampunk-slider" min="4" max="12" value="8" step="1">
-                </div>
-
-                <!-- Tier Badges -->
-                <div class="grid grid-cols-3 gap-3 text-center mt-2">
-                    <div id="tier-easy" class="p-3 rounded-lg border border-stone-700 bg-stone-900/60 transition-all cursor-pointer" onclick="setAge(4)">
-                        <i class="fa-solid fa-compass text-2xl text-emerald-400 mb-1"></i>
-                        <div class="font-cinzel text-xs font-bold text-stone-200">4-6 JAAR</div>
-                        <div class="text-[10px] font-typewriter text-emerald-400">EXPLORATEUR</div>
-                    </div>
-                    <div id="tier-medium" class="p-3 rounded-lg border border-stone-700 bg-stone-900/60 transition-all cursor-pointer" onclick="setAge(8)">
-                        <i class="fa-solid fa-wrench text-2xl text-amber-400 mb-1"></i>
-                        <div class="font-cinzel text-xs font-bold text-stone-200">7-9 JAAR</div>
-                        <div class="text-[10px] font-typewriter text-amber-400">MECHANICUS</div>
-                    </div>
-                    <div id="tier-hard" class="p-3 rounded-lg border border-stone-700 bg-stone-900/60 transition-all cursor-pointer" onclick="setAge(12)">
-                        <i class="fa-solid fa-gauge-high text-2xl text-rose-500 mb-1"></i>
-                        <div class="font-cinzel text-xs font-bold text-stone-200">10-12+ JAAR</div>
-                        <div class="text-[10px] font-typewriter text-rose-400">STOOM MEESTER</div>
+                <!-- Nixie Output -->
+                <div class="flex items-center gap-2 self-start sm:self-auto">
+                    <span class="text-[11px] font-typewriter text-stone-400">LEEFTIJD:</span>
+                    <div class="nixie-display text-lg font-bold" id="nixie-age">
+                        08 JAAR
                     </div>
                 </div>
             </div>
 
-            <!-- Dynamic Mission Info Card -->
-            <div class="grid md:grid-cols-2 gap-4">
-                <div class="bg-amber-950/20 border border-amber-800/40 p-4 rounded-xl">
-                    <h3 class="text-sm font-cinzel font-bold text-brass mb-2 flex items-center gap-2">
-                        <i class="fa-solid fa-scroll"></i> MISSIE EIGENSCHAPPEN
-                    </h3>
-                    <ul class="text-xs font-typewriter space-y-2 text-stone-300" id="mission-specs">
-                        <!-- Populated by JS -->
-                    </ul>
+            <!-- Tier Selector Cards -->
+            <div class="grid grid-cols-3 gap-3 pt-1">
+                <div id="tier-easy" class="tier-card" onclick="selectTier(5)">
+                    <div class="font-cinzel text-xs font-bold text-stone-100">4-6 JAAR</div>
+                    <div class="text-[10px] font-typewriter text-emerald-400 mt-0.5">EXPLORATEUR</div>
                 </div>
-
-                <div class="bg-amber-950/20 border border-amber-800/40 p-4 rounded-xl flex flex-col justify-between">
-                    <div>
-                        <h3 class="text-sm font-cinzel font-bold text-copper-light mb-2 flex items-center gap-2">
-                            <i class="fa-solid fa-microchip"></i> AR SCANNER MODUS
-                        </h3>
-                        <p class="text-xs font-typewriter text-stone-300" id="ar-mode-desc">
-                            Inclusief visuele gidsen en directe kompas-aanwijzers naar verborgen stoomventielen.
-                        </p>
-                    </div>
+                <div id="tier-medium" class="tier-card active" onclick="selectTier(8)">
+                    <div class="font-cinzel text-xs font-bold text-stone-100">7-9 JAAR</div>
+                    <div class="text-[10px] font-typewriter text-amber-400 mt-0.5">MECHANICUS</div>
+                </div>
+                <div id="tier-hard" class="tier-card" onclick="selectTier(11)">
+                    <div class="font-cinzel text-xs font-bold text-stone-100">10-12+ JAAR</div>
+                    <div class="text-[10px] font-typewriter text-rose-400 mt-0.5">STOOM MEESTER</div>
                 </div>
             </div>
         </div>
 
-        <!-- Start Adventure Selection Cards -->
-        <div class="mt-8 pt-6 border-t border-amber-900/60">
+        <!-- Steampunk Pipe Divider with Meter Dial -->
+        <div class="pipe-divider-container">
+            <div class="steam-pipe"></div>
+            <div class="pressure-gauge">
+                <div class="gauge-face">
+                    <div class="gauge-needle" id="gauge-needle"></div>
+                </div>
+                <div class="gauge-cap"></div>
+            </div>
+        </div>
+
+        <!-- Missie Eigenschappen & AR Scanner Modus -->
+        <div class="bg-black/30 border border-amber-900/50 rounded-xl p-4 grid md:grid-cols-2 gap-4">
+            <!-- Left Column: Specs -->
+            <div class="space-y-2 border-b md:border-b-0 md:border-r border-amber-900/40 pb-3 md:pb-0 md:pr-4">
+                <h3 class="text-xs font-cinzel font-bold text-amber-400 flex items-center gap-2">
+                    <i class="fa-solid fa-puzzle-piece"></i> MISSIE EIGENSCHAPPEN
+                </h3>
+                <ul class="text-[11px] font-typewriter space-y-1.5 text-stone-300" id="mission-specs">
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Standaard mechanische ketel raadsels</li>
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Gecombineerde tekst & beeld aanwijzingen</li>
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Matige stoomdruk uitdagingen</li>
+                </ul>
+            </div>
+
+            <!-- Right Column: Scanner Modus -->
+            <div class="space-y-2 flex flex-col justify-center">
+                <h3 class="text-xs font-cinzel font-bold text-copperLight flex items-center gap-2">
+                    <i class="fa-solid fa-compass"></i> AR SCANNER MODUS
+                </h3>
+                <p class="text-[11px] font-typewriter text-stone-300 leading-relaxed" id="ar-mode-desc">
+                    Inclusief kompas-aanwijzers en cijfercodes voor het ontgrendelen van kasten.
+                </p>
+            </div>
+        </div>
+
+        <!-- STAP 2: Kies Verhaallijn -->
+        <div class="mt-6 pt-2">
             <div class="text-center mb-4">
-                <span class="text-xs font-typewriter text-amber-500 tracking-widest uppercase">
-                    KIES JE VERHAALLIJN OM TE STARTEN
-                </span>
+                <h2 class="text-xs md:text-sm font-cinzel font-bold text-amber-400 tracking-wider">
+                    STAP 2: KIES JE VERHAALLIJN OM TE STARTEN
+                </h2>
             </div>
 
-            <div class="grid md:grid-cols-2 gap-5">
-                <!-- Choice 1: Secret Cabinet -->
-                <div class="bg-gradient-to-b from-stone-900 to-amber-950/40 border-2 border-brass/60 rounded-xl p-5 flex flex-col justify-between hover:border-brass transition-all group">
+            <div class="grid md:grid-cols-2 gap-4">
+                <!-- Verhaallijn 1 -->
+                <div class="bg-gradient-to-b from-stone-900/90 to-amber-950/20 border border-amber-800/60 rounded-xl p-4 flex flex-col justify-between hover:border-amber-500 transition-all">
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <h3 class="text-xl font-cinzel font-bold text-brass-light group-hover:text-white transition-colors">
+                            <h3 class="text-base font-cinzel font-bold text-stone-100">
                                 DE GEHEIME KAST
                             </h3>
-                            <i class="fa-solid fa-box-archive text-2xl text-brass"></i>
+                            <i class="fa-solid fa-box-archive text-amber-500 text-lg"></i>
                         </div>
-                        <p class="text-xs font-typewriter text-stone-300 leading-relaxed mb-4">
+                        <p class="text-[11px] font-typewriter text-stone-300 leading-relaxed mb-4">
                             Ontdek de historische geheimen, verborgen documenten en antieke hulpmiddelen uit de hoogtijdagen van het Ketelhuis.
                         </p>
                     </div>
 
-                    <button onclick="launchStory('cabinet')" class="btn-steampunk-lg w-full">
+                    <button onclick="launchStory('cabinet')" class="btn-steampunk w-full text-xs">
                         <i class="fa-solid fa-key"></i> OPEN DE KAST
                     </button>
                 </div>
 
-                <!-- Choice 2: Valves & Mechanics -->
-                <div class="bg-gradient-to-b from-stone-900 to-amber-950/40 border-2 border-copper/60 rounded-xl p-5 flex flex-col justify-between hover:border-copper transition-all group">
+                <!-- Verhaallijn 2 -->
+                <div class="bg-gradient-to-b from-stone-900/90 to-amber-950/20 border border-amber-800/60 rounded-xl p-4 flex flex-col justify-between hover:border-amber-500 transition-all">
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <h3 class="text-xl font-cinzel font-bold text-copper-light group-hover:text-white transition-colors">
+                            <h3 class="text-base font-cinzel font-bold text-stone-100">
                                 DE VENTIELEN
                             </h3>
-                            <i class="fa-solid fa-faucet-drip text-2xl text-copper"></i>
+                            <i class="fa-solid fa-faucet-drip text-copperLight text-lg"></i>
                         </div>
-                        <p class="text-xs font-typewriter text-stone-300 leading-relaxed mb-4">
+                        <p class="text-[11px] font-typewriter text-stone-300 leading-relaxed mb-4">
                             Los de mechanische stoomdruk puzzels op, verbind pijpleidingen en breng de hoofdketel weer tot leven!
                         </p>
                     </div>
 
-                    <button onclick="launchStory('interaction')" class="btn-steampunk-lg w-full">
-                        <i class="fa-solid fa-gauge"></i> REPARER VENTIELEN
+                    <button onclick="launchStory('valves')" class="btn-steampunk w-full text-xs">
+                        <i class="fa-solid fa-wrench"></i> REPARER VENTIELEN
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- Footer & Sound Toggles -->
-        <div class="mt-6 pt-4 border-t border-stone-800 flex flex-wrap items-center justify-between text-xs font-typewriter text-stone-400 gap-3">
-            <div class="flex items-center gap-4">
-                <button onclick="toggleAudio()" id="btn-audio" class="hover:text-brass flex items-center gap-2">
-                    <i class="fa-solid fa-volume-high text-amber-500" id="audio-icon"></i>
-                    <span>GELUID: <strong id="audio-state-text" class="text-emerald-400">AAN</strong></span>
-                </button>
-            </div>
+        <!-- Footer / Geluid Toggle -->
+        <div class="mt-6 pt-3 border-t border-stone-800 flex items-center justify-between text-[11px] font-typewriter text-stone-400">
+            <button onclick="toggleAudio()" class="hover:text-amber-400 flex items-center gap-2 cursor-pointer transition-colors">
+                <i class="fa-solid fa-volume-high text-amber-500" id="audio-icon"></i>
+                <span>GELUID: <strong id="audio-state-text" class="text-emerald-400">AAN</strong></span>
+            </button>
 
-            <div class="text-[11px] text-stone-500">
+            <div class="text-stone-500 text-[10px]">
                 Ketelhuis AR Experience • Stoomketel Nr. 4
             </div>
         </div>
     </div>
 
-    <!-- Custom Steampunk Dialog Modal (No default alert) -->
-    <div id="custom-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-stone-900 border-2 border-brass rounded-xl p-6 max-w-md w-full shadow-2xl relative">
-            <h3 class="text-lg font-cinzel font-bold text-brass-light mb-3 flex items-center gap-2" id="modal-title">
-                <i class="fa-solid fa-circle-info"></i> BERICHT
+    <!-- Modal Dialog (Replaces native alert) -->
+    <div id="custom-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-stone-900 border-2 border-brass rounded-xl p-6 max-w-sm w-full shadow-2xl relative text-center">
+            <h3 class="text-base font-cinzel font-bold text-brassLight mb-2" id="modal-title">
+                MOMENT AANPAKKEN...
             </h3>
-            <p class="text-xs font-typewriter text-stone-300 mb-6 leading-relaxed" id="modal-body">
-                Modal message content goes here.
+            <p class="text-xs font-typewriter text-stone-300 mb-5 leading-relaxed" id="modal-body">
+                Systeem start op...
             </p>
-            <div class="flex justify-end">
-                <button onclick="closeModal()" class="px-5 py-2 bg-amber-900 border border-brass text-amber-200 text-xs font-cinzel font-bold rounded hover:bg-amber-800">
-                    BEGRIJPEN
-                </button>
-            </div>
+            <button onclick="closeModal()" class="btn-steampunk text-xs px-6 py-2">
+                BEGRIJPEN
+            </button>
         </div>
     </div>
 
-    <!-- JavaScript Audio & Logic Engine -->
     <script>
-        // Web Audio Synthesizer for Steampunk Sound Effects
-        class SteampunkAudioEngine {
+        /* Audio Synthesizer for Steampunk FX */
+        class SteampunkSoundEngine {
             constructor() {
                 this.ctx = null;
                 this.enabled = true;
@@ -500,18 +431,17 @@
 
             init() {
                 if (!this.ctx) {
-                    const AudioContext = window.AudioContext || window.webkitAudioContext;
-                    this.ctx = new AudioContext();
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    this.ctx = new AudioCtx();
                 }
             }
 
-            // Procedural Steam Hiss Sound
             playSteamHiss() {
                 if (!this.enabled) return;
                 this.init();
                 const ctx = this.ctx;
                 
-                const bufferSize = ctx.sampleRate * 0.8;
+                const bufferSize = ctx.sampleRate * 0.6;
                 const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
                 const data = buffer.getChannelData(0);
                 for (let i = 0; i < bufferSize; i++) {
@@ -523,12 +453,12 @@
 
                 const filter = ctx.createBiquadFilter();
                 filter.type = 'bandpass';
-                filter.frequency.setValueAtTime(1200, ctx.currentTime);
-                filter.Q.setValueAtTime(3, ctx.currentTime);
+                filter.frequency.setValueAtTime(1000, ctx.currentTime);
+                filter.Q.setValueAtTime(2, ctx.currentTime);
 
                 const gain = ctx.createGain();
-                gain.gain.setValueAtTime(0.3, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.8);
+                gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
 
                 noise.connect(filter);
                 filter.connect(gain);
@@ -537,7 +467,6 @@
                 noise.start();
             }
 
-            // Gear Click / Ratchet Metallic Sound
             playGearClick() {
                 if (!this.enabled) return;
                 this.init();
@@ -547,55 +476,32 @@
                 const gain = ctx.createGain();
 
                 osc.type = 'triangle';
-                osc.frequency.setValueAtTime(320, ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.05);
-
-                gain.gain.setValueAtTime(0.2, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
-
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-
-                osc.start();
-                osc.stop(ctx.currentTime + 0.05);
-            }
-
-            // Brass Chime Button Click
-            playBrassClick() {
-                if (!this.enabled) return;
-                this.init();
-                const ctx = this.ctx;
-
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
-                osc.frequency.setValueAtTime(880, ctx.currentTime + 0.04); // A5
+                osc.frequency.setValueAtTime(280, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(70, ctx.currentTime + 0.04);
 
                 gain.gain.setValueAtTime(0.15, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.04);
 
                 osc.connect(gain);
                 gain.connect(ctx.destination);
 
                 osc.start();
-                osc.stop(ctx.currentTime + 0.2);
+                osc.stop(ctx.currentTime + 0.04);
             }
         }
 
-        const audio = new SteampunkAudioEngine();
+        const sound = new SteampunkSoundEngine();
 
         function toggleAudio() {
-            audio.enabled = !audio.enabled;
+            sound.enabled = !sound.enabled;
             const stateText = document.getElementById('audio-state-text');
             const icon = document.getElementById('audio-icon');
 
-            if (audio.enabled) {
+            if (sound.enabled) {
                 stateText.textContent = "AAN";
                 stateText.className = "text-emerald-400";
                 icon.className = "fa-solid fa-volume-high text-amber-500";
-                audio.playBrassClick();
+                sound.playGearClick();
             } else {
                 stateText.textContent = "UIT";
                 stateText.className = "text-rose-400";
@@ -603,11 +509,76 @@
             }
         }
 
-        // Canvas Animation Engine
+        /* Tier / Age Selection & Pressure Gauge Logic */
+        let currentAge = 8;
+
+        function selectTier(age) {
+            currentAge = age;
+            sound.playGearClick();
+
+            const nixie = document.getElementById('nixie-age');
+            nixie.textContent = (age < 10 ? '0' + age : age) + ' JAAR';
+
+            // Reset tab highlights
+            document.getElementById('tier-easy').classList.remove('active');
+            document.getElementById('tier-medium').classList.remove('active');
+            document.getElementById('tier-hard').classList.remove('active');
+
+            const needle = document.getElementById('gauge-needle');
+            const specsList = document.getElementById('mission-specs');
+            const modeDesc = document.getElementById('ar-mode-desc');
+
+            if (age <= 6) {
+                document.getElementById('tier-easy').classList.add('active');
+                needle.style.transform = 'rotate(-60deg)';
+                specsList.innerHTML = `
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Duidelijke visuele AR hulplijnen</li>
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Gesproken verhaallijn & eenvoudige hints</li>
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Geen tijdsdruk op stoomkleppen</li>
+                `;
+                modeDesc.textContent = "Inclusief extra grote markeringspijlen en gesproken gids voor jonge explorateurs.";
+            } else if (age <= 9) {
+                document.getElementById('tier-medium').classList.add('active');
+                needle.style.transform = 'rotate(0deg)';
+                specsList.innerHTML = `
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Standaard mechanische ketel raadsels</li>
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Gecombineerde tekst & beeld aanwijzingen</li>
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Matige stoomdruk uitdagingen</li>
+                `;
+                modeDesc.textContent = "Inclusief kompas-aanwijzers en cijfercodes voor het ontgrendelen van kasten.";
+            } else {
+                document.getElementById('tier-hard').classList.add('active');
+                needle.style.transform = 'rotate(65deg)';
+                specsList.innerHTML = `
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Complexe stoomdruk & leidingsystemen</li>
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Cryptische hints zonder directe pijlen</li>
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Actieve tijdsdruk op stoomontlastkleppen</li>
+                `;
+                modeDesc.textContent = "Volledig uitdagende modus met verborgen ciphers en nauwkeurige ventiel-timing.";
+            }
+        }
+
+        /* Modal display functions */
+        function showModal(title, message) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-body').textContent = message;
+            document.getElementById('custom-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            sound.playGearClick();
+            document.getElementById('custom-modal').classList.add('hidden');
+        }
+
+        function launchStory(type) {
+            sound.playSteamHiss();
+            const name = type === 'cabinet' ? 'De Geheime Kast' : 'De Ventielen';
+            showModal("VERBINDING MAKEN", `Stoomketel wordt opgestart voor "${name}" (${currentAge} jaar niveau)...`);
+        }
+
+        /* Subtle Rotating Cogs Canvas */
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
-        let particles = [];
-        let cogs = [];
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
@@ -616,67 +587,27 @@
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        // Initialize Background Gear Objects
-        for (let i = 0; i < 6; i++) {
-            cogs.push({
-                x: Math.random() * window.innerWidth,
-                y: Math.random() * window.innerHeight,
-                radius: 40 + Math.random() * 80,
-                teeth: 8 + Math.floor(Math.random() * 8),
-                angle: Math.random() * Math.PI * 2,
-                speed: (Math.random() - 0.5) * 0.008
-            });
-        }
+        const cogs = [
+            { x: 100, y: 150, r: 80, teeth: 12, speed: 0.003, angle: 0 },
+            { x: window.innerWidth - 120, y: window.innerHeight - 150, r: 100, teeth: 16, speed: -0.002, angle: 0 }
+        ];
 
-        // Particle Class for Steam & Embers
-        class Particle {
-            constructor() {
-                this.reset();
-            }
-            reset() {
-                this.x = Math.random() * canvas.width;
-                this.y = canvas.height + 20;
-                this.size = Math.random() * 20 + 10;
-                this.speedY = Math.random() * 1.5 + 0.5;
-                this.speedX = (Math.random() - 0.5) * 0.8;
-                this.opacity = Math.random() * 0.3 + 0.1;
-            }
-            update() {
-                this.y -= this.speedY;
-                this.x += this.speedX;
-                this.opacity -= 0.001;
-                if (this.opacity <= 0 || this.y < -30) {
-                    this.reset();
-                }
-            }
-            draw() {
-                ctx.fillStyle = `rgba(220, 200, 180, ${this.opacity})`;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-
-        for (let i = 0; i < 25; i++) {
-            particles.push(new Particle());
-        }
-
-        function drawGear(x, y, radius, teeth, angle) {
+        function drawCog(cog) {
             ctx.save();
-            ctx.translate(x, y);
-            ctx.rotate(angle);
-            ctx.strokeStyle = 'rgba(181, 137, 33, 0.12)';
-            ctx.lineWidth = 3;
+            ctx.translate(cog.x, cog.y);
+            ctx.rotate(cog.angle);
+            ctx.strokeStyle = 'rgba(181, 137, 33, 0.07)';
+            ctx.lineWidth = 2;
 
             ctx.beginPath();
-            ctx.arc(0, 0, radius, 0, Math.PI * 2);
+            ctx.arc(0, 0, cog.r, 0, Math.PI * 2);
             ctx.stroke();
 
-            const toothWidth = (Math.PI * 2) / (teeth * 2);
-            for (let i = 0; i < teeth; i++) {
-                const a = i * (Math.PI * 2 / teeth);
+            const toothWidth = (Math.PI * 2) / (cog.teeth * 2);
+            for (let i = 0; i < cog.teeth; i++) {
+                const a = i * (Math.PI * 2 / cog.teeth);
                 ctx.beginPath();
-                ctx.arc(0, 0, radius + 10, a, a + toothWidth);
+                ctx.arc(0, 0, cog.r + 12, a, a + toothWidth);
                 ctx.stroke();
             }
             ctx.restore();
@@ -684,111 +615,13 @@
 
         function renderBg() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Draw Cogs
             cogs.forEach(cog => {
                 cog.angle += cog.speed;
-                drawGear(cog.x, cog.y, cog.radius, cog.teeth, cog.angle);
+                drawCog(cog);
             });
-
-            // Draw Steam Particles
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
-
             requestAnimationFrame(renderBg);
         }
         renderBg();
-
-        // Difficulty Slider & Dynamic Calibration UI
-        const slider = document.getElementById('age-slider');
-        const nixieAge = document.getElementById('nixie-age');
-
-        function updateDifficulty(age) {
-            age = parseInt(age);
-            nixieAge.textContent = (age < 10 ? '0' + age : age) + ' JAAR';
-
-            // Highlight Active Tier Badge
-            document.getElementById('tier-easy').className = "p-3 rounded-lg border bg-stone-900/60 transition-all cursor-pointer " + (age <= 6 ? "border-emerald-500 bg-emerald-950/30 ring-2 ring-emerald-500/50" : "border-stone-700");
-            document.getElementById('tier-medium').className = "p-3 rounded-lg border bg-stone-900/60 transition-all cursor-pointer " + (age > 6 && age <= 9 ? "border-amber-500 bg-amber-950/30 ring-2 ring-amber-500/50" : "border-stone-700");
-            document.getElementById('tier-hard').className = "p-3 rounded-lg border bg-stone-900/60 transition-all cursor-pointer " + (age > 9 ? "border-rose-500 bg-rose-950/30 ring-2 ring-rose-500/50" : "border-stone-700");
-
-            // Update Specs List
-            const specsList = document.getElementById('mission-specs');
-            const modeDesc = document.getElementById('ar-mode-desc');
-            const timeEst = document.getElementById('estimated-time');
-
-            if (age <= 6) {
-                specsList.innerHTML = `
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Duidelijke visuele AR hulplijnen</li>
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Gesproken verhaallijn & eenvoudige hints</li>
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Geen tijdsdruk op stoomkleppen</li>
-                `;
-                modeDesc.textContent = "Inclusief extra grote markeringspijlen en gesproken gids voor jonge explorateurs.";
-                localStorage.setItem('gameDifficulty', 'easy');
-            } else if (age <= 9) {
-                specsList.innerHTML = `
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-amber-400"></i> Standaard mechanische ketel raadsels</li>
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-amber-400"></i> Gecombineerde tekst & beeld aanwijzingen</li>
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-amber-400"></i> Matige stoomdruk uitdagingen</li>
-                `;
-                modeDesc.textContent = "Inclusief kompas-aanwijzers en cijfercodes voor het ontgrendelen van kasten.";
-                localStorage.setItem('gameDifficulty', 'medium');
-            } else {
-                specsList.innerHTML = `
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-rose-400"></i> Complexe stoomdruk & leidingsystemen</li>
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-rose-400"></i> Cryptische hints zonder directe pijlen</li>
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-rose-400"></i> Actieve tijdsdruk op stoomontlastkleppen</li>
-                `;
-                modeDesc.textContent = "Volledig uitdagende modus met verborgen ciphers en nauwkeurige ventiel-timing.";
-                localStorage.setItem('gameDifficulty', 'hard');
-            }
-
-            localStorage.setItem('selectedAge', age);
-        }
-
-        slider.addEventListener('input', (e) => {
-            updateDifficulty(e.target.value);
-            audio.playGearClick();
-        });
-
-        function setAge(age) {
-            slider.value = age;
-            updateDifficulty(age);
-            audio.playGearClick();
-        }
-
-        // Initialize from storage or default
-        const initialAge = localStorage.getItem('selectedAge') || 8;
-        slider.value = initialAge;
-        updateDifficulty(initialAge);
-
-        // Custom Modal Logic
-        function showModal(title, text) {
-            document.getElementById('modal-title').innerHTML = `<i class="fa-solid fa-circle-info"></i> ${title}`;
-            document.getElementById('modal-body').textContent = text;
-            document.getElementById('custom-modal').classList.remove('hidden');
-        }
-
-        function closeModal() {
-            audio.playBrassClick();
-            document.getElementById('custom-modal').classList.add('hidden');
-        }
-
-        // Launch Story / Navigation Handler
-        function launchStory(choice) {
-            audio.playSteamHiss();
-            const age = slider.value;
-            const diff = localStorage.getItem('gameDifficulty') || 'medium';
-
-            // Show confirmation toast before redirecting
-            showModal("VERBINDEN MET KETELHUIS", `Stoommotor geactiveerd! Je wordt doorgestuurd naar de ${choice === 'cabinet' ? 'Kast' : 'Ventielen'} ervaring met moeilijkheidsgraad ${diff.toUpperCase()} (${age} Jaar).`);
-
-            setTimeout(() => {
-                window.location.href = `story.html?choice=${choice}&age=${age}&difficulty=${diff}`;
-            }, 1600);
-        }
     </script>
 </body>
 </html>
